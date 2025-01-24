@@ -1,0 +1,83 @@
+  @font-face {
+  font-family: Montserrat;
+  font-weight: 500;
+  font-style: normal;
+  font-display: fallback;
+  src: url("//shopcgx.com/cdn/fonts/montserrat/montserrat_n5.e72d00d31ae5399d260a80ec70322c62c1819762.woff2?h1=ZGlzY291bnR3aWRnZXRzLmFjY291bnQubXlzaG9waWZ5LmNvbQ&h2=c2hvcGNneC5jb20&hmac=42ea8f9d639bd10b4a9ec833daf6daffcd90900e432aff76f32fe2cfad4114b4") format("woff2"),
+       url("//shopcgx.com/cdn/fonts/montserrat/montserrat_n5.18a018b6c83e89030c5d70a6d4c02c969f228500.woff?h1=ZGlzY291bnR3aWRnZXRzLmFjY291bnQubXlzaG9waWZ5LmNvbQ&h2=c2hvcGNneC5jb20&hmac=a6bb9440d0bdad34498965d57a135780f528e2e5d9369ceef4f6dfe03d076615") format("woff");
+}
+
+  @font-face {
+  font-family: Montserrat;
+  font-weight: 400;
+  font-style: normal;
+  font-display: fallback;
+  src: url("//shopcgx.com/cdn/fonts/montserrat/montserrat_n4.1d581f6d4bf1a97f4cbc0b88b933bc136d38d178.woff2?h1=ZGlzY291bnR3aWRnZXRzLmFjY291bnQubXlzaG9waWZ5LmNvbQ&h2=c2hvcGNneC5jb20&hmac=0b9691cb246a2c3a166b843a5824ea283dc5152bc52fd0b1b0056572476f80ba") format("woff2"),
+       url("//shopcgx.com/cdn/fonts/montserrat/montserrat_n4.cfce41a967758ce5a9b7d48daeb5b028fd977a9b.woff?h1=ZGlzY291bnR3aWRnZXRzLmFjY291bnQubXlzaG9waWZ5LmNvbQ&h2=c2hvcGNneC5jb20&hmac=be5e62b2c546328fefb1d125979691395c952db11606852e8cdec218a3794378") format("woff");
+}
+
+
+   
+  
+  
+
+  :root {
+    --heading-font-family : Montserrat, sans-serif;
+    --heading-font-weight : 500;
+    --heading-font-style  : normal;
+
+    --text-font-family : Montserrat, sans-serif;
+    --text-font-weight : 400;
+    --text-font-style  : normal;
+
+    --base-text-font-size   : 13px;
+    --default-text-font-size: 14px;--background          : #ffffff;
+    --background-rgb      : 255, 255, 255;
+    --light-background    : #ffffff;
+    --light-background-rgb: 255, 255, 255;
+    --heading-color       : #1c1b1b;
+    --text-color          : #1c1b1b;
+    --text-color-rgb      : 28, 27, 27;
+    --text-color-light    : #6a6a6a;
+    --text-color-light-rgb: 106, 106, 106;
+    --link-color          : #6a6a6a;
+    --link-color-rgb      : 106, 106, 106;
+    --border-color        : #dddddd;
+    --border-color-rgb    : 221, 221, 221;
+
+    --button-background    : #0079ae;
+    --button-background-rgb: 0, 121, 174;
+    --button-text-color    : #ffffff;
+
+    --header-background       : #ffffff;
+    --header-heading-color    : #0078ad;
+    --header-light-text-color : #6a6a6a;
+    --header-border-color     : #d9ebf3;
+
+    --footer-background    : #ffffff;
+    --footer-text-color    : #6a6a6a;
+    --footer-heading-color : #1c1b1b;
+    --footer-border-color  : #e9e9e9;
+
+    --navigation-background      : #1c1b1b;
+    --navigation-background-rgb  : 28, 27, 27;
+    --navigation-text-color      : #ffffff;
+    --navigation-text-color-light: rgba(255, 255, 255, 0.5);
+    --navigation-border-color    : rgba(255, 255, 255, 0.25);
+
+    --newsletter-popup-background     : #1c1b1b;
+    --newsletter-popup-text-color     : #ffffff;
+    --newsletter-popup-text-color-rgb : 255, 255, 255;
+
+    --secondary-elements-background       : #1c1b1b;
+    --secondary-elements-background-rgb   : 28, 27, 27;
+    --secondary-elements-text-color       : #ffffff;
+    --secondary-elements-text-color-light : rgba(255, 255, 255, 0.5);
+    --secondary-elements-border-color     : rgba(255, 255, 255, 0.25);
+
+    --product-sale-price-color    : #e42721;
+    --product-sale-price-color-rgb: 228, 39, 33;
+    --product-star-rating: #f6a429;
+
+    /* Shopify related variables */
+    --payment-terms-background-color: #ffffff;

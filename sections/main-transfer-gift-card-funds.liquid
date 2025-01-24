@@ -1,0 +1,254 @@
+<section data-section-id="transfer-gift-card-funds" data-section-type="transfer-gift-card-funds">
+  <div class="Container">
+    <div class="PageContent PageContent--fitScreen PageContent--extraNarrow">
+      <div class="form-vertical" style="text-align: center;">
+          {% if settings.enable_gift_card_redemption %}
+            {% if customer %}
+              <img 
+                class="GiftCard__Illustration"
+                style="width: 50%; margin-bottom: 20px"
+                src="//cdn.shopify.com/shopifycloud/shopify/assets/themes_support/gift-card/card-fd4b15ddcc3d3505fee3c54f36da76696244c344ddb6d22558b08bb8cf0cf9f9.jpg"
+                alt="Gift card illustration">
+  
+              <br />
+              
+              <header class="Form__Header">
+                <h1 class="Form__Title Heading u-h1">{{ page.title }}</h1>
+              </header>
+  
+              {% assign fundsTransfer = 'GiftCardFundsTransferForm' %}
+              {% assign giftCardNumber = fundsTransfer | append: "-CardNumber" %}
+              {% assign pinNumber = fundsTransfer | append: "-PinNumber" %}
+              {% assign transferAmount = fundsTransfer | append: "-TransferAmount" %}
+              {% assign formActionUrl = "https://svs-shopcgx.azurewebsites.net/request-auth" %}
+              {% assign customerIdId = fundsTransfer | append: "-CustomerId" %}
+  
+              
+              <div class="Alert Alert--large Alert--success" style="text-align: start; margin-bottom: 40px">
+                <p>Want to use your CGX/NEXCOM/AAFES gift card on ShopCGX? No problem! The funds on those gift cards can be temporarily transferred to a Shopify gift card for making online purchases with us.</p>
+                <p>Fill out and submit the following information to perform a funds transfer. A couple of things to note:</p>
+                <p>The created Shopify gift card is only valid for 29 days.</p>
+                <p>After 29 days, the Shopify gift card is deactivated.</p>
+                <p>Once deactivated, the remaining funds on the Shopify gift card will be transferred back to your SVS gift card within 24 hours.</p>
+              </div>
+          
+              <form id="{{ fundsTransfer }}" onsubmit="return false">
+                <input type="hidden" name="{{ customerIdId }}" id="{{ customerIdId }}" value="{{ customer.id }}">
+              
+                <div class="Form__Item">
+                  <input
+                  type="tel" 
+                  inputmode="numeric"
+                  autocomplete="cc-number"
+                  maxlength="19"
+                  name="{{ giftCardNumber }}"
+                  id="{{ giftCardNumber }}"
+                  class="Form__Input"
+                  aria-required="true">
+                <label for="{{ giftCardNumber }}" class="Form__FloatingLabel">CGX Gift Card Number</label>
+                </div>
+                  
+                <div class="Form__Item">
+                  <input
+                  type="password"
+                  name="{{ pinNumber }}"
+                  id="{{ pinNumber }}"
+                  class="Form__Input"
+                  maxlength="4"
+                  aria-required="true">
+                <label id="{{ pinNumber }}" for="{{ pinNumber }}" class="Form__FloatingLabel">PIN Number</label>
+                </div>
+                    
+                <div class="Form__Item">
+                  <input
+                  type="number"
+                  name="{{ transferAmount }}"
+                  id="{{ transferAmount }}"
+                  class="Form__Input"
+                  maxlength="99999999"
+                  aria-required="true">
+                <label id="{{ transferAmount }}" for="{{ transferAmount }}" class="Form__FloatingLabel">Transfer Amount</label>
+                </div>
+      
+                <p class="text-center">
+                  <button id="transfer-gift-card-balance-button" class="Button Button--primary Button--full">Submit</button>
+                </p>
+              </form>
+  
+              {% comment %}
+              Modal message window for gift card fund transfer results.
+              {% endcomment %}
+              <div id="modal-gift-card-transfer-results" class="Modal Modal--address" aria-hidden="true" role="dialog" data-scrollable>
+                <button id="modal-gift-card-transfer-results-close" class="Modal__Close Modal__Close--outside" data-action="close-modal">{%- render 'icon' with 'close' -%}</button>
+          
+                <header class="Modal__Header">
+                  <h3 id="modal-gift-card-transfer-results-header" class="Modal__Title Heading u-h2"></h3>
+                </header>
+          
+                <div id="modal-gift-card-transfer-results-content-wrapper" class="Modal__Content">
+                  <p id="modal-gift-card-transfer-results-content" style="text-align: start"></p>
+                </div>
+              </div>
+            {% else %}
+              <header class="Form__Header">
+                <h1 class="Form__Title Heading u-h1">You must be logged in to access this area.</h1>
+              </header>
+            {% endif %}
+          {% else %}
+          <header class="PageHeader">
+            <div class="Container">
+              <div class="SectionHeader SectionHeader--center">
+                <h1 class="SectionHeader__Heading Heading u-h1">Gift card redemption is disabled.</h1>
+              </div>
+            </div>
+          </header>
+        {% endif %}
+     </div>
+    </div>
+  </div>   
+ </section>
+
+<script>
+  const asBoldHtmlString = function (string) {
+    return "<strong>" + string + "</strong>";
+  };
+  
+  const checkAndResetForm = function (response) {
+    if (response && response.success) {
+      document.getElementById("{{ fundsTransfer }}").reset();
+    }
+  };
+  
+  const showGiftCardTransferResultsModal = function ({ header, success, contentAugmenter}) {
+    const modalHeader = document.getElementById("modal-gift-card-transfer-results-header");
+    modalHeader.innerHTML = header;
+
+    const modalContent = document.getElementById("modal-gift-card-transfer-results-content");
+    modalContent.innerHTML = "";
+    if (success === true) {
+      modalContent.className = "Alert Alert--large Alert--success";
+    } else if (success === false) {
+      modalContent.className = "Alert Alert--large Alert--error";
+    } else {
+      modalContent.className = "";
+    }
+    contentAugmenter(modalContent);
+    
+    const modalPageOverlay = document.querySelector('.PageOverlay');
+    modalPageOverlay.classList.add("is-visible");
+    
+    document.getElementById("modal-gift-card-transfer-results").ariaHidden = false;
+  };
+  
+  const processMessage = function (result, unexpected) {
+    if (result) {
+      if (result.success) {
+        showGiftCardTransferResultsModal({
+          header: "Success!", 
+          success: true,
+          contentAugmenter: function (contentElement) {
+            const initialAmount = parseFloat(result.content.initialValue.amount).toFixed(2);
+            const initialAmountHtml = asBoldHtmlString(initialAmount);
+            const giftCardEmail = asBoldHtmlString("{{ customer.email }}");
+            const startingMessage = document.createElement("p");
+            startingMessage.innerHTML = "A Shopify gift card has been created for the amount of " + initialAmountHtml + ". "
+              + "An email will be sent to " + giftCardEmail + " shortly with more information regarding the gift card.";
+            
+            const additionalInfoMessage = document.createElement("p");
+            additionalInfoMessage.innerHTML = "To manage the newly created gift card, "
+              + '<a href="/pages/manage-gift-cards">click here</a>.';
+
+            contentElement.appendChild(startingMessage);
+            contentElement.appendChild(additionalInfoMessage);
+          }
+        });    
+      } else {
+        showGiftCardTransferResultsModal({
+          header: "An error occurred...", 
+          success: false,
+          contentAugmenter: function (contentElement) {
+            const startingMessageElement = document.createElement("p");
+            const errorTypeString = unexpected ? "unexpected error" : "error";
+            const startingMessageString = "An " + errorTypeString + " happened when processing your funds transfer";
+            startingMessageElement.innerHTML = asBoldHtmlString(startingMessageString);
+            contentElement.appendChild(startingMessageElement);
+            
+            var errorMessage = "";
+            var errorMessageRetrieved = false;
+            if (typeof result === "string") {
+              errorMessage = result;
+              errorMessageRetrieved = true;
+            } else if (!!result && typeof result === "object" && typeof result.errorMessage === "string") {
+              errorMessage = result.errorMessage;
+              errorMessageRetrieved = true;
+            }
+
+            if (errorMessageRetrieved) {
+              startingMessageElement.innerHTML += ":";
+              const errorMessageElement = document.createElement("p");
+              errorMessageElement.innerHTML = errorMessage;
+              contentElement.appendChild(errorMessageElement);
+            } else {
+              startingMessageElement.innerHTML += ".";
+            }
+            
+            const endingMessageElement = document.createElement("p");
+            endingMessageElement.innerHTML = asBoldHtmlString("Contact ShopCGX customer support for assistance.");
+            contentElement.appendChild(endingMessageElement);
+          }
+        });
+      }
+    }
+  };
+  
+  const transferGiftCardFundsButton = document.getElementById("transfer-gift-card-balance-button");
+  if (transferGiftCardFundsButton) {
+    transferGiftCardFundsButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      const transferFormElement = document.getElementById("{{ fundsTransfer }}");
+      const transferFormData = new FormData(transferFormElement);
+      const transferFormParams = new URLSearchParams(transferFormData);
+      fetch('{{ formActionUrl }}', {
+        method: "POST",
+        mode: 'cors',
+        body: transferFormParams
+      })
+      .then(function(response) {
+        console.log("Result (before parsing): ", response);
+        return response.json();
+      })
+      .then(function(parsedResult) {
+        console.log("Gift card funds transfer result: ", parsedResult);
+        processMessage(parsedResult, false);
+        checkAndResetForm(parsedResult);
+      })
+      .catch(function(error) {
+        console.log("Gift card funds transfer error: ", error);
+        processMessage(error, true);
+      });
+    });
+  }
+
+  const giftCardTransferModalCloseButton = document.getElementById("modal-gift-card-transfer-results-close");
+  if (giftCardTransferModalCloseButton) {
+    giftCardTransferModalCloseButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById("modal-gift-card-transfer-results").ariaHidden = true;
+      document.querySelector('.PageOverlay').classList.remove("is-visible");
+    });
+  }
+</script>
+
+{% schema %}
+  {
+    "name": "Transfer Gift Card Funds",
+    "settings": []
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

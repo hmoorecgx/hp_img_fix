@@ -1,0 +1,214 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+form {
+  padding: 25px;
+  background: #fff;
+  max-width: 1000px;
+  width: 100%;
+  border-radius: 7px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+}
+
+form h2 {
+  font-size: 27px;
+  text-align: center;
+  margin: 0px 0 30px;
+}
+
+form .form-group {
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.input__small{
+    width: 333px;
+    display: inline-grid;
+    margin: 0 20px 0 0;
+}
+
+.input__small input{
+  height:30px;
+}
+
+@media screen and (max-width: 1024px) {
+.input__small{
+    display: block;
+    width: 100%;
+}
+}
+
+form label {
+  display: block;
+  margin: 10px 0;
+  font-weight: 700;
+}
+
+form input,
+form select {
+  height: auto;
+  padding: 10px;
+  width: 100%;
+  font-size: 15px;
+  outline: none;
+  background: #fff;
+  border-radius: 3px;
+  border: 1px solid #bfbfbf;
+  margin: 0 10px 0 0;
+ color: #000;
+}
+
+form input:focus,
+form select:focus {
+  border-color: #9a9a9a;
+}
+
+form input.error,
+form select.error {
+  border-color: #f91919;
+  background: #f9f0f1;
+}
+
+form small {
+  font-size: 14px;
+  margin-top: 5px;
+  display: block;
+  color: #f91919;
+}
+
+form .password i {
+  position: absolute;
+  right: 0px;
+  height: 45px;
+  top: 28px;
+  font-size: 13px;
+  line-height: 45px;
+  width: 45px;
+  cursor: pointer;
+  color: #939393;
+  text-align: center;
+}
+
+#capForm span{
+  color:#FF0000;
+}
+
+.submit-btn {
+  margin-top: 30px;
+}
+
+.capButton{
+  margin:30px auto;
+}
+
+.hide{
+  display:none;
+}
+
+.form-group b, .cm-required b{
+  font-size:1rem;
+  line-height: 35px;
+}
+
+.ty-subheader{
+  margin:10px 0;
+}
+
+.show{
+      display: inline-flex;
+}
+
+.submit-btn input {
+  color: white;
+  border: none;
+  height: auto;
+  font-size: 16px;
+  padding: 13px 0;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  text-align: center;
+  background: #0079ae;
+  transition: 0.2s ease;
+}
+
+
+
+.ty-form-builder__checkbox-label,
+.ty-form-builder__radio-label {
+  display: inline-block;
+  margin: 0 15px 5px 0;
+  white-space: nowrap;
+}
+
+.ty-form-builder__checkbox-label,
+.ty-form-builder__radio-label {
+  display: inline-flex;
+  white-space: nowrap;
+}
+
+.checkBox {
+  width: 32%;
+  display: inline-flex;
+  height: 12px;
+  text-wrap: nowrap;
+  line-height: 10px;
+  vertical-align: middle;
+}
+
+.bottomCheck{
+  width:100%
+}
+
+.checkBox input{
+  margin-left:5px;
+}
+
+.checkBox small {
+  margin: 0;
+}
+
+.capForm{
+    width: 50%;
+    margin: 0 auto 30px;
+}
+.radioLine {
+   display: inline-flex;
+}
+
+.radioLine input{
+    width:auto;
+}
+.radioLine label{
+  line-height: 10px;
+}
+
+  #verify{
+    margin-top: 10px;
+    width: 10px;
+    height: 10px;
+    }
+
+@media screen and (max-width: 1024px) {
+.capForm{
+      width: 100%;
+}
+
+  .radioLine {
+    display: block;
+    width: 347px;
+}
+
+.radioLine label {
+  display: inline-flex;
+  width: 300px;
+}
+  
+  .shortLabel {
+    width: 250px!important;
+}
+
+}

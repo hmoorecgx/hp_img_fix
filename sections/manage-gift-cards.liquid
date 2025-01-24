@@ -1,0 +1,312 @@
+<section data-section-id="manage-gift-cards" data-section-type="manage-gift-cards">
+  <div class="Container">
+    <div class="PageContent PageContent--fitScreen PageContent--narrow">
+      <div class="form-vertical" style="text-align: center;">
+        {% if settings.enable_gift_card_redemption %}
+          {% if customer %}
+            <header class="Form__Header">
+              <h1 class="Form__Title Heading u-h1">{{ page.title }}</h1>
+            </header>
+  
+            {% assign formActionUrl = 'https://svs-shopcgx.azurewebsites.net/request-cancel' %}
+            
+            <p>You may view and modify existing Shopify gift cards below:</p>
+            <br />
+          
+            <div id="gift-card-table-wrapper">
+              <table id="gift-card-table" class="AccountTable Table Table--large">
+                <thead class="Text--subdued">
+                  <tr>
+                    <th></th>
+                    <th>Active Gift Cards</th>
+                    <th>Balance</th>
+                    <th>Expiration Date</th>
+                    <th class="Text--alignRight">Manage</th>
+                  </tr>
+                </thead>
+                <tbody id="gift-card-table-body" class="Heading u-h7">
+                </tbody>
+              </table>
+            </div>
+  
+            {% comment %}
+            Modal message window for deactivating gift card results.
+            {% endcomment %}
+            <div
+              id="modal-gift-card-deactivating-results"
+              class="Modal Modal--address"
+              aria-hidden="true"
+              role="dialog"
+              data-scrollable
+            >
+              <button
+                id="modal-gift-card-deactivating-results-close"
+                class="Modal__Close Modal__Close--outside"
+                data-action="close-modal"
+              >
+                {%- render 'icon' with 'close' -%}
+              </button>
+  
+              <header class="Modal__Header">
+                <h3 id="modal-gift-card-deactivating-results-header" class="Modal__Title Heading u-h2"></h3>
+              </header>
+  
+              <div id="modal-gift-card-deactivating-results-content-wrapper" class="Modal__Content">
+                <p id="modal-gift-card-deactivating-results-content"></p>
+              </div>
+            </div>
+  
+          {% else %}
+            <header class="Form__Header">
+              <h1 class="Form__Title Heading u-h1">You must be logged in to access this area.</h1>
+            </header>
+          {% endif %}
+        {% else %}
+          <header class="PageHeader">
+            <div class="Container">
+              <div class="SectionHeader SectionHeader--center">
+                <h1 class="SectionHeader__Heading Heading u-h1">Gift card redemption is disabled.</h1>
+              </div>
+            </div>
+          </header>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const asBoldHtmlString = function (string) {
+    return "<strong>" + string + "</strong>";
+  };
+
+  const checkAndResetForm = function (response) {
+    if (response && response.success) {
+      document.getElementById(form.id).reset();
+    }
+  };
+
+  const showGiftCardDeactivateResultsModal = function ({ header, success, contentAugmenter }) {
+    const modalHeader = document.getElementById("modal-gift-card-deactivating-results-header");
+    modalHeader.innerHTML = header;
+
+    const modalContent = document.getElementById("modal-gift-card-deactivating-results-content");
+    modalContent.innerHTML = "";
+    modalContent.style.textAlign = "start";
+    if (success === true) {
+      modalContent.className = "Alert Alert--large Alert--success";
+    } else if (success === false) {
+      modalContent.className = "Alert Alert--large Alert--error";
+    } else {
+      modalContent.className = "";
+    }
+    contentAugmenter(modalContent);
+
+    const modalPageOverlay = document.querySelector('.PageOverlay');
+    modalPageOverlay.classList.add("is-visible");
+
+    document.getElementById("modal-gift-card-deactivating-results").ariaHidden = false;
+  };
+
+  const showGiftCardDeactivateErrorModal = function (parsedResult, expectedError) {
+    showGiftCardDeactivateResultsModal({
+      header: "Error...",
+      success: false,
+      contentAugmenter: function (contentElement) {
+        const errorStartingElement = document.createElement("p");
+        errorStartingElement.innerHTML = "An error occurred deactivating the gift card";
+        
+        // TODO: Populate error message here
+        if (typeof parsedResult === "object" 
+            && typeof parsedResult.content === "object"
+            && typeof parsedResult.content.errorMessage === "string") {
+          errorStartingElement.innerHTML += ": " + parsedResult.content.errorMessage;
+        } else {
+          errorStartingElement.innerHTML += ". "
+            + "Contact customer support for assistance.";
+        }
+
+        contentElement.appendChild(errorStartingElement);
+      }
+    });
+  };
+
+  function renderGiftCardTable(gift_cards) {
+    const gift_card_table = document.getElementById("gift-card-table-body");
+
+    gift_cards.forEach(function (card) {
+      const gift_card_row = document.createElement("tr");
+
+      const icon_cell = document.createElement("td");
+      icon_cell.innerHTML = (
+        '<img class="GiftCard__Illustration" '
+        + 'src="//cdn.shopify.com/shopifycloud/shopify/assets/themes_support/gift-card/card-fd4b15ddcc3d3505fee3c54f36da76696244c344ddb6d22558b08bb8cf0cf9f9.jpg" '
+        + 'alt="Gift card illustration">'
+      );
+      gift_card_row.appendChild(icon_cell);
+      
+      const card_number_cell = document.createElement("td");
+      card_number_cell.innerHTML = asBoldHtmlString(
+        "**** **** **** " + card.last_characters.toUpperCase()
+      );
+      gift_card_row.appendChild(card_number_cell);
+
+      const balance_cell = document.createElement("td");
+      balance_cell.innerHTML = "$ " + card.balance;
+      gift_card_row.appendChild(balance_cell);
+
+      const expires_on_cell = document.createElement("td");
+      if (card.expires_on) {
+        expires_on_cell.innerHTML = card.expires_on;
+      } else {
+        expires_on_cell.innerHTML = "(None)";
+      }
+      gift_card_row.appendChild(expires_on_cell);
+
+      const gift_card_id_input = document.createElement("input");
+      gift_card_id_input.id = "GiftCardDeactivateForm-GiftCardId";
+      gift_card_id_input.name = gift_card_id_input.id;
+      gift_card_id_input.type = "hidden";
+      gift_card_id_input.value = card.id;
+      gift_card_row.appendChild(gift_card_id_input);
+
+      const customer_id_input = document.createElement("input");
+      customer_id_input.id = "GiftCardDeactivateForm-CustomerId";
+      customer_id_input.name = customer_id_input.id;
+      customer_id_input.type = "hidden";
+      customer_id_input.value = card.customer_id;
+      gift_card_row.appendChild(customer_id_input);
+
+      const deactivate_button = document.createElement("button");
+      deactivate_button.id = "gift-card-" + card.last_characters + "-deactivate-id";
+      deactivate_button.className = "Button Button--primary Button--full";
+      deactivate_button.innerHTML = "Deactivate";
+
+      const form = document.createElement("form");
+      form.id = "gift-card-" + card.last_characters + "-manage";
+      form.appendChild(gift_card_id_input);
+      form.appendChild(customer_id_input);
+      form.appendChild(deactivate_button);
+      deactivate_button.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        showGiftCardDeactivateResultsModal({
+          header: "Are you sure?",
+          success: undefined,
+          contentAugmenter: function (contentElement) {
+            const startingMessageElement = document.createElement("p");
+            const lastFourString = asBoldHtmlString(card.last_characters.toUpperCase());
+            const startingMessageString = "Deactivate your Shopify Gift Card ending in '" + lastFourString + "'?";
+            startingMessageElement.innerHTML = startingMessageString;
+            
+            const yesButton = document.createElement("button");
+            yesButton.className = "Button Button--primary Button--full";
+            yesButton.innerHTML = "Yes";
+            yesButton.addEventListener('click', function (e) {
+              e.preventDefault();
+              
+              document.getElementById("modal-gift-card-deactivating-results").ariaHidden = true;
+              document.querySelector('.PageOverlay').classList.remove("is-visible");
+              
+              const formElement = document.getElementById(form.id);
+              const formData = new FormData(formElement);
+              const formParams = new URLSearchParams(formData);
+              fetch('{{ formActionUrl }}', {
+                method: "POST",
+                mode: 'cors',
+                body: formParams
+              })
+              .then(function (response) {
+                console.log("Result (before parsing): ", response);
+                return response.json();
+              })
+              .then(function (parsedResult) {
+                console.log("Deactivation result: ", parsedResult);
+                if (parsedResult.success) {
+                  location.reload();
+                } else {
+                  showGiftCardDeactivateErrorModal(parsedResult, true);
+                }
+              })
+              .catch(function (error) {
+                console.log("Deactivation error: ", error);
+                showGiftCardDeactivateErrorModal(error, false);
+              });
+            });
+            
+            const noButton = document.createElement("button");
+            noButton.className = "Button Button--secondary Button--full";
+            noButton.innerHTML = "No";
+            noButton.addEventListener('click', function (e) {
+              e.preventDefault();
+
+              // Close modal window
+              document.getElementById("modal-gift-card-deactivating-results").ariaHidden = true;
+              document.querySelector('.PageOverlay').classList.remove("is-visible");
+            });
+            
+            contentElement.appendChild(startingMessageElement);
+            contentElement.appendChild(yesButton);
+            contentElement.appendChild(document.createElement("p"));
+            contentElement.appendChild(noButton);
+          }
+        });
+      });
+
+      const manage_cell = document.createElement("td");
+      manage_cell.className = "Text--alignRight";
+      manage_cell.appendChild(form);
+      gift_card_row.appendChild(manage_cell);
+
+      gift_card_table.appendChild(gift_card_row);
+    });
+  };
+
+  const giftCardDeactivateModalCloseButton = document.getElementById("modal-gift-card-deactivating-results-close");
+  if (giftCardDeactivateModalCloseButton) {
+    giftCardDeactivateModalCloseButton.addEventListener('click', function (e) {
+      e.preventDefault();
+      document.getElementById("modal-gift-card-deactivating-results").ariaHidden = true;
+      document.querySelector('.PageOverlay').classList.remove("is-visible");
+    });
+  }
+
+  fetch('/admin/api/2023-04/gift_cards/search.json?status=enabled&query=email:{{ customer.email }}', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Access-Token': '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',
+    },
+  })
+  .then(function (response) {
+    return response.json();
+  })
+  .then(function (gift_card_data) {
+    console.log("Logging gift card data: ", gift_card_data);
+    if (gift_card_data.errors) {
+      document.getElementById("gift-card-table-wrapper").innerText = "Error getting gift cards..."
+      return;
+    }
+
+    const gift_cards = gift_card_data.gift_cards;
+    if (!Array.isArray(gift_cards) || !gift_cards.length) {
+      document.getElementById("gift-card-table-wrapper").innerText = "You have no gift cards associated with your customer account."
+      return;
+    }
+
+    renderGiftCardTable(gift_cards);
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Manage gift cards",
+  "settings": []
+}
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

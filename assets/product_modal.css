@@ -1,0 +1,80 @@
+ /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999; /* Ensure higher z-index */
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.9);
+    }
+
+    .modal-content {
+      margin: auto;
+      display: block;
+      width: 80%;
+      max-width: 700px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .modal-content img {
+      width: 100%;
+      height: auto;
+      margin: 140px 0 0;
+    }
+
+    /* Close button */
+    .close {
+      color: #fff;
+      position: absolute;
+      top: 15px;
+      right: 35px;
+      font-size: 30px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #999;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+
+.modal-section {
+  position: fixed;
+  top: 0;
+  right: -400px; /* Adjust this value based on how far you want the modal to slide in from the right side */
+  bottom: 0;
+  width: 400px; /* Adjust this value based on how wide you want the modal to be */
+  background-color: #fff;
+  z-index: 9999; /* Adjust this value based on the z-index of other elements on your site */
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  transition: transform 0.3s ease-out;
+}
+
+.modal-section.open {
+  transform: translateX(-400px); /* Adjust this value based on how far you want the modal to slide in */
+}
+
+.modal-content {
+  padding: 20px;
+}
+
+.close-modal-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.mystyle{
+  display:none!important;
+  opacity:0;
+}

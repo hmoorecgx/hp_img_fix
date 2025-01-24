@@ -1,0 +1,149 @@
+/*********************** Custom CSS for Boost AI Search & Discovery  ************************/
+
+.boost-sd__header-main-2-content {
+  padding: 20px 0px !important;
+  width: 100%;
+}
+
+
+.boost-sd__header-title {
+  padding-bottom: 20px;
+}
+
+.boost-sd__header-main-2--middle-center {
+  width: 100%;
+
+}
+
+/**********************Updates the collection feaatured image ***************************/
+
+{% if template.name == "collection" and collection.image %}
+  /*----- hides the header text ----*/
+  .boost-sd__header-title {
+    display: none;
+  } 
+  
+  /*---- sets the height of the banner and the top section of the collection----*/ 
+  .boost-sd__header-image-inner, .boost-sd__header-image-overlay, .boost-sd__header-image--medium {
+    height: 250px !important; 
+  }
+{% endif %}
+
+/**********************Collection filter piece ***************************/
+{% if collection.all_types %}
+.boost-sd__header-main-2-content {
+  width: fit-content!important;
+  margin: 0 auto;
+  
+}
+
+.BannerWrapper  {
+    width: 100%;
+    margin: 0 auto;
+    border-bottom: 1px solid #027badff;
+    padding: 0px 0 40px 38px;
+}
+
+.boost-sd__header-main-2--middle-center {
+  width: 100%;
+   background-color: #fff!important;
+}
+
+.boost-sd__header-main-2 {
+    display: block;
+}
+
+.filter__Top{
+    display: inline-flex;
+  flex-wrap: wrap;
+}
+.filter__img{
+    width: auto;
+    text-align: center;
+}
+.filter__img a{
+    font-size: 12px;
+    text-transform: uppercase;
+    word-wrap: none;
+}
+
+.boost-sd__header-description img {
+    max-width: 225px;
+}
+
+   .BrandLetterRow{
+        border-top:1px solid var(--border-color)
+    }
+
+@media screen and (max-width: 750px) {
+.filter__Top {
+    width: 100%;
+    display: block;
+}
+
+.BannerWrapper {
+  padding:0 0 40px 0;
+  }
+  
+.filter__img {
+    width: 49%;
+    display: inline-flex;
+}
+
+  .boost-sd__header-main-2--middle-center {
+    padding: 0;
+    margin: 0;
+}
+
+  .boost-sd__header-description {
+    max-height: 300px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+  .boost-sd__header-description img {
+    max-width: 100%;
+}
+
+  .boost-sd__product-list-grid--3-col.boost-sd__product-list--margin .boost-sd__product-item {
+width: 100%;
+}
+}
+
+@media (min-width: 750px) and  (max-width: 1370px) {
+
+.BannerWrapper {
+  padding:0 0 40px 0;
+  }
+  
+.filter__img a {
+ width: 225px;
+  font-size: 10px;
+}
+
+ .filter__img p {
+  width: 150px;
+    margin: 0 auto;
+  }
+
+  .filter__Top {
+    width: 108%;
+
+  }
+}
+
+
+
+
+
+
+{% endif%}
+
+/*********************** colelctions page setting width of images ************************/
+
+@media screen and (max-width: 600px) {
+.boost-sd__product-list--margin .boost-sd__product-item {
+    width: 100%!important;
+}
+}
+

@@ -1,0 +1,80 @@
+{{ 'contact_us.css' | asset_url | stylesheet_tag }}
+
+<section data-section-id="unit-gear-order" data-section-type="unit-gear-order">
+  <div class="Container Rte">
+    <div class="PageContent PageContent--narrow">
+
+      {% comment %}
+      Modal message window 
+      {% endcomment %}
+      <div
+        id="modal-results"
+        class="Modal"
+        aria-hidden="true"
+        role="dialog"
+        data-scrollable>
+        <button
+          id="modal-results-close"
+          class="Modal__Close Modal__Close--outside"
+          data-action="close-modal">
+          {%- render 'icon' with 'close' -%}
+        </button>
+      
+        <header class="Modal__Header">
+          <h3 id="modal-results-header" class="Modal__Title Heading u-h2"></h3>
+        </header>
+      
+        <div id="modal-results-content-wrapper" class="Modal__Content">
+          <p id="modal-results-content"></p>
+        </div>
+      </div>
+
+      
+      <form name="myForm" id="contactUs" onsubmit="return false">
+        <h2>Email Us Here</h2>
+        <div class="form-group poc1name">
+          <label for="fullName">Full Name &nbsp;<span>*</span></label>
+          <input type="text" id="fullName" name="fullName">
+        </div>
+        <div class="form-group poc1phone">
+          <label for="phone">Phone Number&nbsp;<span>*</span></label>
+          <input type="text" id="phone" name="phone">
+        </div>
+        <div class="form-group email">
+          <label for="email">Email Address&nbsp;<span>*</span></label>
+          <input type="text" id="email" name="email">
+        </div>
+         <div class="form-group email">
+             <label for="message">Message</label>
+             <textarea id="w3review" name="w3review" rows="4" cols="62">
+            </textarea>
+         </div>
+     
+
+        
+      
+        <div class="form-group submit-btn">
+          <button id="unit-gear-submit" type="submit" class="Form__Submit Button Button--primary capButton">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script src="{{ 'contact-us.js' | asset_url }}" defer></script>
+<script>
+  $(document).ready(function() {
+    $('#radio1').click(function() {
+      $('.hide').removeClass('show'); 
+    });
+    
+    $('#radio2').click(function() {
+      $('.hide').addClass('show').siblings().removeClass('hide');  
+    });
+
+    $("#modal-results-close").click(function() {
+      document.getElementById("modal-results").ariaHidden = true;
+      document.querySelector('.PageOverlay').classList.remove("is-visible");
+    });
+  }); 
+</script>

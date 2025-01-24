@@ -1,0 +1,26 @@
+{% assign handleized_permission_tags = "" %}
+
+{% if customer %}
+  {% assign permissions_csv = customer.metafields.patron_validation.effective_permissions %}
+  {% if permissions_csv %}
+    {% assign permissions = permissions_csv | split: ", " %}
+    {% if permissions.size > 0 %}
+      {% assign handleized_permission_tags = handleized_permission_tags | append: "filter.p.tag=" %}
+    {% endif %}
+    
+    {% for permission in permissions %}
+      {% assign stripped_permission = permission | strip %}
+      {% assign permission_tag = settings.permission_tag_prefix | append: stripped_permission %}
+      {% assign encoded_tag = permission_tag | url_encode %}
+
+      {% assign handleized_permission_tags = handleized_permission_tags | append: encoded_tag %}
+      {% unless forloop.last %}
+        {% assign handleized_permission_tags = handleized_permission_tags | append: "," %}
+      {% endunless %}
+    {% endfor %}
+
+    
+  {% endif %}
+{% endif %}
+
+{{ handleized_permission_tags }}

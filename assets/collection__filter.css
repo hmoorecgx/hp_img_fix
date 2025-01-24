@@ -1,0 +1,16 @@
+.nonactive {
+  opacity: 0;
+  display: none;
+}
+
+.hidden {
+  display: none;
+}
+
+.filter__back {
+  margin-left: 50px;
+  text-decoration: underline !important;
+  color: blue !important;
+  line-height: 35px;
+  cursor: pointer;
+}

@@ -1,0 +1,309 @@
+<div class="Container">
+  <header class="PageHeader">
+    <div class="SectionHeader SectionHeader--center">
+      <h1 class="SectionHeader__Heading Heading u-h1">{{ page.title }}</h1>
+    </div>
+  </header>
+
+  <div class="PageContent PageContent--narrow">
+    <div class="Rte">
+      {{- page.content -}}
+
+      <div class="container">
+        <span>
+          <a
+            href="tel:1-800-572-0230"
+            title="Call us toll free"
+            class="Button Button--secondary"
+            >Call us toll free (1-800-572-0230)</a
+>
+        </span>
+        <span>
+          <a
+            href="mailto:customerservice@cgexchange.org"
+            title="Email us"
+            class="Button Button--secondary"
+            target="_blank"
+            >Email us</a
+          >
+        </span>
+        <span>
+          <a
+            href="https://cgexchange.zendesk.com/hc/en-us/requests/new?ticket_form_id=28235853278355"
+            title="Submit Customer Feedback"
+            class="Button Button--secondary"
+            target="_blank"
+            >Submit Customer Feedback</a
+          >
+        </span>
+        <span>
+          <a
+            href="https://discountwidgets.myshopify.com/pages/returns"
+            title="Return Policy"
+            class="Button Button--secondary"
+            target="_blank"
+            >Return Policy</a
+          >
+        </span>
+      </div>
+      <hr>
+      <div>
+        <h2>Customer Service available:</h2>
+        <p>
+          Monday - Thursday 9:30am - 6:00pm ET | Friday - Saturday 9:00am - 1:00pm ET | Closed
+          Holidays
+        </p>
+        
+        <p>
+          To contact a store directly, please see a complete listing of our store locations, phone numbers, and hours of
+          operation
+          <u
+            ><b
+              ><a
+                href="https://shopcgx.com/pages/locations"
+                style="color: #0079ae"
+                title="Store Locations"
+                target="_blank"
+                >HERE</a
+              >.</b
+            ></u
+          >
+        </p>
+
+        {% unless true %}
+          <hr>
+
+          <h1>PROVIDE FEEDBACK</h1>
+          <p>
+            We welcome your feedback and take your comments seriously. We will use them to improve our stores, the
+            merchandise we sell and the services we provide.
+          </p>
+          <p><a title="Feedback Form" href="#contact_form">SUBMIT ONLINE FORM</a></p>
+        {% endunless %}
+
+        {% unless true %}
+          <hr>
+
+          <h2>UNIT PRIDE</h2>
+          <ul>
+            <li>
+              <a title="Unit Ball Cap Order Form" href="https://discountwidgets.myshopify.com/pages/unit-ball-caps"
+                >Unit Ball Caps</a
+              >
+            </li>
+            <li>
+              <a href="https://discountwidgets.myshopify.com/pages/unit-gear" title="Unit Gear Brochure" target="_blank"
+                >Unit Gear Brochure</a
+              >
+            </li>
+          </ul>
+        {% endunless %}
+
+        <hr>
+
+        <h2>HEADQUARTERS AND MAILING ADDRESS</h2>
+        <p class="address">
+          Community Services Command<br>
+          510 Independence Parkway, Suite 500<br>
+          Chesapeake, VA 23320
+        </p>
+      </div>
+    </div>
+
+    {% unless true %}
+      {%- form 'contact', class: 'Form Form--spacingTight' -%}
+        {%- if form.posted_successfully? -%}
+          <p class="Alert Alert--success">{{ 'contact.form.successfully_sent' | t }}</p>
+        {%- endif -%}
+
+        {%- if form.errors -%}
+          <div class="Form__Alert Alert Alert--error">
+            <ul class="Alert__ErrorList">
+              {%- for field in form.errors -%}
+                {%- if field == 'form' -%}
+                  <li class="Alert__ErrorItem">{{ form.errors.messages[field] }}</li>
+                {%- else -%}
+                  <li class="Alert__ErrorItem">
+                    <strong>{{ form.errors.translated_fields[field] }}</strong> {{ form.errors.messages[field] }}
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+
+        <div class="Form__Group">
+          <div class="Form__Item">
+            <input
+              type="text"
+              class="Form__Input"
+              name="contact[name]"
+              aria-label="{{ 'contact.form.name' | t }}"
+              placeholder="{{ 'contact.form.name' | t }}"
+              required
+              {% if customer %}
+                value="{{ customer.name }}"
+              {% endif %}
+            >
+            <label class="Form__FloatingLabel">{{ 'contact.form.name' | t }}</label>
+          </div>
+
+          <div class="Form__Item">
+            <input
+              type="email"
+              class="Form__Input"
+              name="contact[email]"
+              aria-label="{{ 'contact.form.email' | t }}"
+              placeholder="{{ 'contact.form.email' | t }}"
+              required
+              {% if customer %}
+                value="{{ customer.email }}"
+              {% endif %}
+            >
+            <label class="Form__FloatingLabel">{{ 'contact.form.email' | t }}</label>
+          </div>
+        </div>
+
+        {%- for block in section.blocks -%}
+          {%- assign field_title = block.settings.title -%}
+
+          {%- if field_title == blank -%}
+            {%- capture field_title -%}Custom field {% increment custom_field %}{%- endcapture -%}
+          {%- endif -%}
+
+          {%- if block.type == 'text' -%}
+            <div class="Form__Item">
+              {%- if block.settings.use_long_text -%}
+                <textarea
+                  name="contact[{{ field_title | escape }}]"
+                  cols="30"
+                  rows="10"
+                  class="Form__Textarea"
+                  aria-label="{{ block.settings.title | escape }}"
+                  placeholder="{{ block.settings.title | escape }}"
+                  {% if block.settings.is_required %}
+                    required
+                  {% endif -%}
+                ></textarea>
+                <label class="Form__FloatingLabel">{{ block.settings.title | escape }}</label>
+              {%- else -%}
+                <input
+                  type="text"
+                  class="Form__Input"
+                  name="contact[{{ field_title | escape }}]"
+                  aria-label="{{ block.settings.title | escape }}"
+                  placeholder="{{ block.settings.title | escape }}"
+                  {% if block.settings.is_required %}
+                    required
+                  {% endif %}
+                >
+                <label class="Form__FloatingLabel">{{ block.settings.title | escape }}</label>
+              {%- endif -%}
+            </div>
+          {%- elsif block.type == 'dropdown' -%}
+            {%- assign values = block.settings.values | split: ',' -%}
+
+            {%- if values == empty -%}
+              {%- continue -%}
+            {%- endif -%}
+
+            <div class="Form__Item">
+              <div class="Form__Select Select Select--primary">
+                {%- render 'icon' with 'select-arrow' -%}
+
+                <select name="contact[{{ field_title | escape }}]" title="{{ block.settings.title | escape }}" required>
+                  <option value="" disabled selected>{{ block.settings.title | escape }}</option>
+
+                  {%- for value in values -%}
+                    {%- assign trim_value = value | strip -%}
+
+                    <option value="{{ trim_value | escape }}">{{ trim_value | escape }}</option>
+                  {%- endfor -%}
+                </select>
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+
+        <div class="Form__Item">
+          <textarea
+            name="contact[body]"
+            cols="30"
+            rows="10"
+            class="Form__Textarea"
+            aria-label="{{ 'contact.form.message' | t }}"
+            placeholder="{{ 'contact.form.message' | t }}"
+            required
+          ></textarea>
+          <label class="Form__FloatingLabel">{{ 'contact.form.message' | t }}</label>
+        </div>
+
+        <button type="submit" class="Form__Submit Button Button--primary Button--full">
+          {{ 'contact.form.submit' | t }}
+        </button>
+      {%- endform -%}
+    {% endunless %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Contact page",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Text field",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Name",
+          "default": "Custom field"
+        },
+        {
+          "type": "checkbox",
+          "id": "use_long_text",
+          "label": "Use long text",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "is_required",
+          "label": "Field is required",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "dropdown",
+      "name": "Dropdown",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Name",
+          "default": "Custom field"
+        },
+        {
+          "type": "text",
+          "id": "values",
+          "label": "Values",
+          "info": "Separate each value by a comma.",
+          "default": "value 1, value 2, value 3"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "text",
+        "settings": {
+          "title": "Your phone (optional)"
+        }
+      }
+    ]
+  }
+}
+{% endschema %}

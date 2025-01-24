@@ -1,0 +1,413 @@
+{{ 'unit-order.css' | asset_url | stylesheet_tag }}
+<section data-section-id="unit-gear-order" data-section-type="unit-gear-order">
+  <div class="Container">
+    <div class="PageContent PageContent--narrow">
+
+      {% comment %}
+      Modal message window 
+      {% endcomment %}
+      <div
+        id="modal-results"
+        class="Modal"
+        aria-hidden="true"
+        role="dialog"
+        data-scrollable>
+        <button
+          id="modal-results-close"
+          class="Modal__Close Modal__Close--outside"
+          data-action="close-modal">
+          {%- render 'icon' with 'close' -%}
+        </button>
+      
+        <header class="Modal__Header">
+          <h3 id="modal-results-header" class="Modal__Title Heading u-h2"></h3>
+        </header>
+      
+        <div id="modal-results-content-wrapper" class="Modal__Content">
+          <p id="modal-results-content"></p>
+        </div>
+      </div>
+
+      {% render 'unit-full-color-info' %}
+      
+      <form name="myForm" id="fullColorOrderForm" onsubmit="return false"> 
+      <input id="templateType" type="hidden" name="templateType" value="color-shirt" />
+        <h2>Unit Information</h2>
+         <div class="form-group unitName">
+          <label for="unitName">Unit Name &nbsp;<span>*</span></label>
+          <input type="text" id="unitName" name="unitName">
+        </div>
+
+           <!--Email input -->
+         <div class="field field--with-error">
+            <label class="field__label" for="ContactForm-email">
+            {{- 'templates.contact.form.email' | t }}
+            <span aria-hidden="true">*</span></label
+          >
+          <input
+            autocomplete="email"
+            type="email"
+            id="ContactForm-email"
+            class="field__input"
+            name="contact[email]"
+            spellcheck="false"
+            autocapitalize="off"
+            value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+            aria-required="true"
+            {% if form.errors contains 'email' %}
+              aria-invalid="true"
+              aria-describedby="ContactForm-email-error"
+            {% endif %}
+            placeholder="{{ 'templates.contact.form.email' | t }}"
+          >
+         
+          {%- if form.errors contains 'email' -%}
+            <small class="contact__field-error" id="ContactForm-email-error">
+              <span class="visually-hidden">{{ 'accessibility.error' | t }}</span>
+              <span class="form__message">
+                {%- render 'icon-error' -%}
+                {{- form.errors.translated_fields.email | capitalize }}
+                {{ form.errors.messages.email -}}
+              </span>
+            </small>
+          {%- endif -%}
+        </div>
+
+        <!-- end email input -->
+        <div class="form-group orderDate sizeInputs">
+          <label for="orderDate">Order Date &nbsp;<span>*</span></label>
+          <input type="date" id="orderDate" name="orderDate" min="2024-01-01" max="2025-12-31">
+        </div>
+        <div class="form-group delDate sizeInputs">
+          <label for="delDate">Delivery Date<span>*</span></label>
+          <input type="date" id="delDate" name="delDate" min="2024-01-01" max="2025-12-31">
+        </div>
+
+        <script>
+            document.getElementById('orderDate').valueAsDate = new Date();
+            var currentTime = new Date();
+            currentTime.setDate(currentTime.getDate()+28);
+          document.getElementById('delDate').valueAsDate = currentTime;
+        </script>
+
+        <h5>SHIPPING ADDRESS</h5>
+        <div class="form-group shippRadio">
+          <label for="elm_112" class="ty-control-group__title cm-required "><b>Shipping Destination</b>&nbsp;<span>*</span></label>
+          <div class="radioLine">
+            <input class="ty-form-builder__radio radio" checked="checked" type="radio" name="shippingDest" value="Ship to local CGX" >
+            <label for="shippingDest" class="ty-form-builder__radio-label">Ship To Local CGX</label>
+      
+            <input class="ty-form-builder__radio radio" type="radio" name="shippingDest" value="Ship to Unit" required>
+            <label for="shippingDest" class="ty-form-builder__radio-label">Ship To Unit</label>
+          </div>
+        </div>
+        <div class="form-group unitStore">
+          <label for="unitStore">Unit Name | Exchange Location (Store #)&nbsp;<span>*</span></label>
+          <input type="text" id="unitStore" name="unitStore">
+        </div>
+        <div class="form-group unitStore">
+          <label for="unitAdd">Address&nbsp;<span>*</span></label>
+          <input type="text" id="unitAdd" name="unitAdd">
+        </div>
+        <div class="form-group unitStore">
+          <label for="unitCity">City | APO | FPO:&nbsp;<span>*</span></label>
+          <input type="text" id="unitCity" name="unitCity">
+        </div>
+        <div class="form-group unitStore sizeInputs">
+          <label for="unitSt">State | AP | AA | AE:&nbsp;<span>*</span></label>
+          <select id="unitSt" name="state"><option value="---">---</option><option value="Alabama">Alabama</option><option value="Alaska">Alaska</option><option value="Arizona">Arizona</option><option value="Arkansas">Arkansas</option><option value="California">California</option><option value="Colorado">Colorado</option><option value="Connecticut">Connecticut</option><option value="Delaware">Delaware</option><option value="District of Columbia">District of Columbia</option><option value="Florida">Florida</option><option value="Georgia">Georgia</option><option value="Guam">Guam</option><option value="Hawaii">Hawaii</option><option value="Idaho">Idaho</option><option value="Illinois">Illinois</option><option value="Indiana">Indiana</option><option value="Iowa">Iowa</option><option value="Kansas">Kansas</option><option value="Kentucky">Kentucky</option><option value="Louisiana">Louisiana</option><option value="Maine">Maine</option><option value="Maryland">Maryland</option><option value="Massachusetts">Massachusetts</option><option value="Michigan">Michigan</option><option value="Minnesota">Minnesota</option><option value="Mississippi">Mississippi</option><option value="Missouri">Missouri</option><option value="Montana">Montana</option><option value="Nebraska">Nebraska</option><option value="Nevada">Nevada</option><option value="New Hampshire">New Hampshire</option><option value="New Jersey">New Jersey</option><option value="New Mexico">New Mexico</option><option value="New York">New York</option><option value="North Carolina">North Carolina</option><option value="North Dakota">North Dakota</option><option value="Northern Marianas Islands">Northern Marianas Islands</option><option value="Ohio">Ohio</option><option value="Oklahoma">Oklahoma</option><option value="Oregon">Oregon</option><option value="Pennsylvania">Pennsylvania</option><option value="Puerto Rico">Puerto Rico</option><option value="Rhode Island">Rhode Island</option><option value="South Carolina">South Carolina</option><option value="South Dakota">South Dakota</option><option value="Tennessee">Tennessee</option><option value="Texas">Texas</option><option value="Utah">Utah</option><option value="Vermont">Vermont</option><option value="Virginia">Virginia</option><option value="Virgin Islands">Virgin Islands</option><option value="Washington">Washington</option><option value="West Virginia">West Virginia</option><option value="Wisconsin">Wisconsin</option><option value="Wyoming">Wyoming</option></select>
+        </div>
+        <div class="form-group unitStore sizeInputs">
+          <label for="unitZip">Zip | APO | FPO:&nbsp;<span>*</span></label>
+          <input type="tel" pattern="[0-9]*" maxlength="5" id="unitZip" name="unitZip">
+        </div>
+        <hr class="ty-form-builder__separator"><hr class="ty-form-builder__separator">
+        <div class="ty-control-group clothes">
+         <img src="https://cdn.shopify.com/s/files/1/0532/6720/2223/files/m-252.png?v=1705075380" class="garmentLocation"/>
+ <div class="tshirtSpace">
+     <h6 class="header-4">Short Sleeve T-shirt</h6>
+     <p><a href="##" id="myBtn2">Size Chart</a></p>
+     <div><label id = "label1" for="checkbox1"> Single color</label>
+     <input type = "checkbox" id = "checkbox1" class="color__checkbox" value="SSColor" name="SSColor"></div>
+     <div id = "text1"> Short Sleeve Cotton Tee  $9.99</div>
+  </div>
+
+        </div>
+
+    
+
+         <div class="form-group sizeInputs totalInput">
+         <input type="text" name="total" id="total" min="0" value="0"/>
+         </div>
+        <div class="form-group sizeInputs">
+          <label for="sizeSM"># SMALL</label>
+          <input onblur="findTotal()" type="number" id="M305USsizeSM" name="size" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="sizeMD"># MEDIUM</label>
+          <input onblur="findTotal()" type="number" id="M305USsizeMD" name="size" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="sizeLG"># LARGE</label>
+          <input onblur="findTotal()" type="number" id="M305USsizeLG" name="size" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="sizeXLG"># X LARGE</label>
+          <input onblur="findTotal()" type="number" id="M305USsizeXLG" name="size" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="size2XLG"># 2X LARGE</label>
+          <input onblur="findTotal()" type="number" id="M305USsize2XLG" name="size" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="size3XLG"># 3X LARGE <span>*</span></label>
+          <input onblur="findTotal()" type="number" id="M305USsize3XLG" name="size" step="1" min="0" value="0">
+        </div>
+        <h6><span>* Utilize the checkbox for full color selection</span></h6>
+        <hr class="ty-form-builder__separator">
+
+
+        <!--second product-->
+
+        <div class="ty-control-group clothes">
+         <img src="https://cdn.shopify.com/s/files/1/0532/6720/2223/files/C0282AUH.png?v=1705077048" class="garmentLocation"/>
+            <div class="tshirtSpace">
+     <h6 class="header-4">Long Sleeve Cotton Tee</h6>
+     <p><a href="##" id="myBtn3">Size Chart</a></p>
+     <div><label id = "label2" for="checkbox2"> Single color</label>
+     <input type = "checkbox" id = "checkbox2" class="color__checkbox" value="LSColor" name="LSColor"></div>
+     <div id = "text2">Long Sleeve Cotton Tee $16.99</div>
+  </div>
+    
+        </div>
+
+    
+        <div class="form-group sizeInputs totalInput">
+         <input type="text" name="total" id="total1" min="0" value="0"/>
+         </div>
+        <div class="form-group sizeInputs">
+          <label for="sizeSM"># SMALL</label>
+          <input onblur="findTotal()" type="number" id="C0282AUHsizeSM" name="size1" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="sizeMD"># MEDIUM</label>
+          <input onblur="findTotal()" type="number" id="C0282AUHsizeMD" name="size1" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="sizeLG"># LARGE</label>
+          <input onblur="findTotal()" type="number" id="C0282AUHsizeLG" name="size1" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="sizeXLG"># X LARGE</label>
+          <input onblur="findTotal()" type="number" id="C0282AUHsizeXLG" name="size1" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="size2XLG"># 2X LARGE</label>
+          <input onblur="findTotal()" type="number" id="C0282AUHsize2XLG" name="size1" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="size3XLG"># 3X LARGE <span>*</span></label>
+          <input onblur="findTotal()" type="number" id="C0282AUHsize3XLG" name="size1" step="1" min="0" value="0">
+        </div>
+        <h6><span>* Utilize the checkbox for full color selection</span></h6>
+        <hr class="ty-form-builder__separator">
+
+        <!--end second product -->
+
+         <!--third product-->
+
+        <div class="ty-control-group clothes">
+         <img src="https://cdn.shopify.com/s/files/1/0532/6720/2223/files/966M.png?v=1705077503" class="garmentLocation"/>
+            <div class="tshirtSpace">
+               <h6 class="header-4">Poly Short Sleeve Wicking shirt</h6>
+               <p><a href="##" id="myBtn4">Size Chart</a></p>
+               <div><label id = "label3" for="checkbox3"> Single color</label>
+               <input type = "checkbox" id = "checkbox3" class="color__checkbox" value="PolyColor" name="PolyColor"></div>
+               <div id = "text3">Short Sleeve Wicking shirt  $19.99</div>
+            </div>
+
+        </div>
+
+         <div class="form-group sizeInputs totalInput">
+         <input type="text" name="total" id="total2" min="0" value="0"/>
+         </div>
+        <div class="form-group sizeInputs">
+          <label for="sizeSM"># SMALL</label>
+          <input onblur="findTotal()" type="number" id="966MsizeSM" name="size2" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="sizeMD"># MEDIUM</label>
+          <input onblur="findTotal()" type="number" id="966MsizeMD" name="size2" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="sizeLG"># LARGE</label>
+          <input onblur="findTotal()" type="number" id="966MsizeLG" name="size2" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="sizeXLG"># X LARGE</label>
+          <input onblur="findTotal()" type="number" id="966MsizeXLG" name="size2" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="size2XLG"># 2X LARGE</label>
+          <input onblur="findTotal()" type="number" id="966Msize2XLG" name="size2" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="size3XLG"># 3X LARGE <span>*</span></label>
+          <input onblur="findTotal()" type="number" id="966Msize3XLG" name="size2" step="1" min="0" value="0">
+        </div>
+        <h6><span>* Utilize the checkbox for full color selection</span></h6>
+        <hr class="ty-form-builder__separator">
+
+        <!--end third product -->
+
+        <!-- Fourth product-->
+
+        <div class="ty-control-group clothes">
+         <img src="https://cdn.shopify.com/s/files/1/0532/6720/2223/files/9300.png?v=1705077998" class="garmentLocation"/>
+           <div class="tshirtSpace">
+               <h6 class="header-4">CREW NECK</h6>
+               <p><a href="##" id="myBtn5">Size Chart</a></p>
+               <div><label id = "label4" for="checkbox4"> Single color</label>
+               <input type = "checkbox" id = "checkbox4" class="color__checkbox" value="CrewColor" name="CrewColor"></div>
+               <div id = "text4">CREW NECK  $24.99</div>
+            </div>
+
+
+
+          
+    
+        </div>
+
+        
+          <div class="form-group sizeInputs totalInput">
+           <input type="text" name="total" id="total3" min="0" value="0"/>
+         </div>
+        <div class="form-group sizeInputs">
+          <label for="sizeSM"># SMALL</label>
+          <input onblur="findTotal()" type="number" id="9300sizeSM" name="size3" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="sizeMD"># MEDIUM</label>
+          <input onblur="findTotal()" type="number" id="9300sizeMD" name="size3" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="sizeLG"># LARGE</label>
+          <input onblur="findTotal()" type="number" id="9300sizeLG" name="size3" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="sizeXLG"># X LARGE</label>
+          <input onblur="findTotal()" type="number" id="9300sizeXLG" name="size3" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="size2XLG"># 2X LARGE</label>
+          <input onblur="findTotal()" type="number" id="9300size2XLG" name="size3" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="size3XLG"># 3X LARGE <span>*</span></label>
+          <input onblur="findTotal()" type="number" id="9300size3XLG" name="size3" step="1" min="0" value="0">
+        </div>
+        <h6><span>* Utilize the checkbox for full color selection</span></h6>
+        <hr class="ty-form-builder__separator">
+
+        <!--end fourth product -->
+
+        <!-- Fifth product-->
+
+        <div class="ty-control-group clothes">
+         <img src="https://cdn.shopify.com/s/files/1/0532/6720/2223/files/9388.png?v=1705078080" class="garmentLocation"/>
+           <div class="tshirtSpace">
+               <h6 class="header-4">Cotton Pullover Hoody </h6>
+               <p><a href="##" id="myBtn6">Size Chart</a></p>
+               <div><label id = "label5" for="checkbox5"> Single color</label>
+               <input type = "checkbox" id = "checkbox5" class="color__checkbox" value="HoodyColor" name="HoodyColor"></div>
+               <div id = "text5">Cotton Pullover Hoody $29.99</div>
+            </div>
+
+
+         
+    
+        </div>
+
+         <div class="form-group sizeInputs totalInput">
+          <input type="text" name="total" id="total4" min="0" value="0"/>
+         </div>
+        <div class="form-group sizeInputs">
+          <label for="sizeSM"># SMALL</label>
+          <input onblur="findTotal()" type="number" id="9388sizeSM" name="size4" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="sizeMD"># MEDIUM</label>
+          <input onblur="findTotal()" type="number" id="9388sizeMD" name="size4" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="sizeLG"># LARGE</label>
+          <input onblur="findTotal()" type="number" id="9388sizeLG" name="size4" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="sizeXLG"># X LARGE</label>
+          <input onblur="findTotal()" type="number" id="9388sizeXLG" name="size4" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="size2XLG"># 2X LARGE</label>
+          <input onblur="findTotal()" type="number" id="9388size2XLG" name="size4" step="1" min="0" value="0">
+        </div>
+        <div class="form-group sizeInputs">
+          <label for="size3XLG"># 3X LARGE <span>*</span></label>
+          <input onblur="findTotal()" type="number" id="9388size3XLG" name="size4" step="1" min="0" value="0">
+        </div>
+        <h6><span>* Utilize the checkbox for full color selection</span></h6>
+
+         <div class="form-group sizeInputs totalInput">
+          <input type="text" name="total" id="grandTotal" min="0" value="0"/>
+         </div>
+
+            <div class="form-group sizeInputs totalInput">
+                  <label for="specialInstructions">Special Printing Instructions</label>
+                  <textarea id="specialInstructions" name="instructions" rows="4" cols="50" value="Add any special instructions here"></textarea>
+        </div>
+        <hr class="ty-form-builder__separator"><hr class="ty-form-builder__separator">
+
+        <!--end fifth  product -->
+
+        <div class="form-group checkBox bottomCheck">
+          <div class="radioLine">
+            <label for="verify">I have verified the information above.&nbsp;<span>*</span></label>
+            <input id="verify" class="ty-form-builder__checkbox checkbox" type="checkbox" name="verify" value="Yes">
+          </div>
+        </div>
+      
+        <div class="form-group submit-btn">
+          <button id="unit-gear-submit" type="submit" class="Form__Submit Button Button--primary capButton">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+
+{% render 'unit-modals' %}
+<script src="{{ 'unit-full-color.js' | asset_url }}" defer></script>
+<script src="{{ 'unit-full-color-product.js' | asset_url }}" defer></script>
+<script src="{{ 'unit-modal.js' | asset_url }}" defer></script>
+
+<script src="{{ 'full__color.min.js' | asset_url }}" defer></script>
+
+<script>
+
+
+
+  $(document).ready(function() {
+    $('#radio1').click(function() {
+      $('.hide').removeClass('show'); 
+    });
+    
+    $('#radio2').click(function() {
+      $('.hide').addClass('show').siblings().removeClass('hide');  
+    });
+
+    $("#modal-results-close").click(function() {
+      document.getElementById("modal-results").ariaHidden = true;
+      document.querySelector('.PageOverlay').classList.remove("is-visible");
+    });
+  }); 
+</script>
